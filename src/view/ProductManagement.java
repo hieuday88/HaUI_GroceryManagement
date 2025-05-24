@@ -9,6 +9,7 @@ import controller.ProductController;
 import dao.CategoryDAO;
 import dao.ProductDAO;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -60,6 +61,7 @@ public class ProductManagement extends javax.swing.JFrame {
         });
         try {
             initComponents();
+            setIconImage(Toolkit.getDefaultToolkit().getImage(ProductManagement.class.getResource("/resources/product-management2.png")));
             categoryDAO = new CategoryDAO();
             productDAO = new ProductDAO();
             categoryController = new CategoryController(categoryDAO, null);
@@ -265,6 +267,7 @@ public class ProductManagement extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("HaUI Grocery Management");
         setMinimumSize(new java.awt.Dimension(800, 700));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N

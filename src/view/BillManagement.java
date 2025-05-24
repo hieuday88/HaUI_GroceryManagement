@@ -8,6 +8,7 @@ import controller.BillController;
 import controller.UserController;
 import dao.BillDAO;
 import dao.UserDAO;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -37,6 +38,8 @@ public class BillManagement extends javax.swing.JFrame {
 
     public BillManagement(User user) {
         initComponents();
+        this.setIconImage(
+	Toolkit.getDefaultToolkit().getImage(BillManagement.class.getResource("/resources/bill-icon.png")));
         setResizable(false);
         setLocationRelativeTo(null);
         addWindowListener(new WindowAdapter() {

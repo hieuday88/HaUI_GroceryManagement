@@ -6,6 +6,7 @@ package view;
 
 import controller.BillController;
 import dao.BillDAO;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class Home extends javax.swing.JFrame {
 
     public Home(User user) {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(Home.class.getResource("/resources/logo.png")));
         this.user = user;
         setResizable(false);
         setLocationRelativeTo(null);
@@ -74,6 +76,7 @@ public class Home extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("HaUI Grocery Management");
         setMinimumSize(new java.awt.Dimension(1200, 650));
 
         labelHello.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N

@@ -7,6 +7,7 @@ package view;
 import controller.CategoryController;
 import dao.CategoryDAO;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -42,6 +43,8 @@ public class CategoryManagement extends javax.swing.JFrame {
     public CategoryManagement(User user) {
         try {
             initComponents();
+            this.setIconImage(Toolkit.getDefaultToolkit()
+            .getImage(CategoryManagement.class.getResource("/resources/product-management1.png")));
             addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
@@ -150,6 +153,7 @@ public class CategoryManagement extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("HaUI Grocery Management");
         setMinimumSize(new java.awt.Dimension(800, 700));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N

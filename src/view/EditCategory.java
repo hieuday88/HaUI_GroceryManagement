@@ -7,6 +7,7 @@ package view;
 import controller.CategoryController;
 import dao.CategoryDAO;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import model.Category;
@@ -28,6 +29,7 @@ public class EditCategory extends javax.swing.JFrame {
 
     public EditCategory(CategoryController categoryController, Category category) {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(EditCategory.class.getResource("/resources/logo.png")));
         categoryDAO = new CategoryDAO();
         this.category = category;
         this.categoryController = categoryController;

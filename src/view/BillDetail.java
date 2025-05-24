@@ -6,6 +6,7 @@ package view;
 
 import controller.UserController;
 import dao.UserDAO;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -33,6 +34,8 @@ public class BillDetail extends javax.swing.JFrame {
 
     public BillDetail(Bill bill) {
         initComponents();
+        this.setIconImage(
+	Toolkit.getDefaultToolkit().getImage(BillDetail.class.getResource("/resources/bill-icon.png")));
         setResizable(false);
         setLocationRelativeTo(null);
         this.bill = bill;
@@ -83,6 +86,7 @@ public class BillDetail extends javax.swing.JFrame {
         labelName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("HaUI Grocery Management");
         setMinimumSize(new java.awt.Dimension(500, 700));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 30)); // NOI18N

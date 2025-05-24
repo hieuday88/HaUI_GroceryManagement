@@ -6,6 +6,7 @@ package view;
 
 import controller.ProductController;
 import dao.ProductDAO;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -28,6 +29,7 @@ public class ProductByCategory extends javax.swing.JFrame {
 
     public ProductByCategory(Category category) {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(ProductByCategory.class.getResource("/resources/product-management2.png")));
         setLocationRelativeTo(null);
         setResizable(false);
         categoryId = category.getId();
@@ -66,6 +68,7 @@ public class ProductByCategory extends javax.swing.JFrame {
         table = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("HaUI Grocery Management");
         setMinimumSize(new java.awt.Dimension(600, 650));
 
         txtTittle.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N

@@ -9,6 +9,7 @@ import controller.ProductController;
 import dao.CategoryDAO;
 import dao.ProductDAO;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -37,6 +38,7 @@ public final class AddProduct extends javax.swing.JFrame {
 
     public AddProduct(ProductController productController, Product product) {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(AddProduct.class.getResource("/resources/add-icon.png")));
         setResizable(false);
         setLocationRelativeTo(null);
         categoryDao = new CategoryDAO();

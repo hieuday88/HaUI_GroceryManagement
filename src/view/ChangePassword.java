@@ -5,6 +5,7 @@
 package view;
 
 import dao.UserDAO;
+import java.awt.Toolkit;
 import model.User;
 import java.io.IOException;
 import javax.swing.JOptionPane;
@@ -29,6 +30,7 @@ public class ChangePassword extends javax.swing.JFrame {
 
     public ChangePassword(User user) {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/secured-laptop.png")));
         this.user = user;
         userDAO = new UserDAO();
         isHide1 = isHide2 = isHide3 = true;

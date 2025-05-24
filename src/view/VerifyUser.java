@@ -5,6 +5,7 @@
 package view;
 
 import dao.UserDAO;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class VerifyUser extends javax.swing.JFrame {
 
     public VerifyUser(User user) {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(VerifyUser.class.getResource("/resources/verified-account.png")));
         setResizable(false);
         setLocationRelativeTo(null);
         this.user = user;
@@ -91,6 +93,7 @@ public class VerifyUser extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("HaUI Grocery Management");
         setMinimumSize(new java.awt.Dimension(600, 800));
 
         table.setModel(new javax.swing.table.DefaultTableModel(

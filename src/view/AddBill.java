@@ -3,6 +3,7 @@ package view;
 import controller.BillController;
 import controller.ProductController;
 import dao.ProductDAO;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ public class AddBill extends javax.swing.JFrame implements ProductSelection {
 
     public AddBill(BillController billController, User user) {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(AddBill.class.getResource("/resources/create-bill-icon.png")));
         setResizable(false);
         setLocationRelativeTo(null);
         this.billController = billController;

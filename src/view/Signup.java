@@ -1,6 +1,7 @@
 package view;
 
 import dao.UserDAO;
+import java.awt.Toolkit;
 import model.User;
 import java.io.IOException;
 import javax.swing.JOptionPane;
@@ -24,6 +25,7 @@ public class Signup extends javax.swing.JFrame {
 
     public Signup() {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(Signup.class.getResource("/resources/signup_icon.png")));
         setResizable(false);
         setLocationRelativeTo(null);
         isHide1 = true;
@@ -62,6 +64,7 @@ public class Signup extends javax.swing.JFrame {
         txtPassword = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("ĐĂNG KÝ");
         setMinimumSize(new java.awt.Dimension(900, 650));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N

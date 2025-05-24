@@ -7,6 +7,7 @@ package view;
 import controller.CategoryController;
 import dao.CategoryDAO;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +31,7 @@ public class AddCategory extends javax.swing.JFrame {
     public AddCategory(CategoryController categoryController, Category category)   
     {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(AddCategory.class.getResource("/resources/logo.png")));
         categoryDAO = new CategoryDAO();
         this.category = category;
         this.categoryController = categoryController;

@@ -5,6 +5,7 @@
 package view;
 
 import dao.UserDAO;
+import java.awt.Toolkit;
 import model.User;
 import java.io.IOException;
 import javax.swing.JOptionPane;
@@ -28,6 +29,7 @@ public class ResetPassword extends javax.swing.JFrame {
 
     public ResetPassword() {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(ResetPassword.class.getResource("/resources/verified-account.png")));
         setResizable(false);
         setLocationRelativeTo(null);
         sm = new SendMail();
@@ -53,6 +55,7 @@ public class ResetPassword extends javax.swing.JFrame {
         btnBack = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Tìm lại mật khẩu");
         setMinimumSize(new java.awt.Dimension(900, 600));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/haui-logo.png"))); // NOI18N
