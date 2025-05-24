@@ -28,35 +28,36 @@ public final class AddProduct extends javax.swing.JFrame {
     /**
      * Creates new form AddProduct
      */
+    private static final long serialVersionUID = 1L;
     private CategoryDAO categoryDao;
     private CategoryController categoryController;
     private ProductController productController;
     private Product product;
     private ProductDAO productDAO;
+
     public AddProduct(ProductController productController, Product product) {
         initComponents();
+        setResizable(false);
+        setLocationRelativeTo(null);
         categoryDao = new CategoryDAO();
         productDAO = new ProductDAO();
-	categoryController = new CategoryController(categoryDao, null);
+        categoryController = new CategoryController(categoryDao, null);
         this.productController = productController;
         this.product = product;
         initCombo();
     }
-    
+
     public void initCombo() {
         try {
-			List<Category> categories = categoryController.getAllCategories();
-			DefaultComboBoxModel<Category> comboBoxModel = new DefaultComboBoxModel<Category>();
-			for (Category category : categories) {
-				comboBoxModel.addElement(category);
-			}
-			comboCategory.setModel(comboBoxModel);
-		} catch (ClassNotFoundException | IOException e1) {
-			e1.printStackTrace();
-		}
+            List<Category> categories = categoryController.getAllCategories();
+            DefaultComboBoxModel<Category> comboBoxModel = new DefaultComboBoxModel<>();
+            for (Category category : categories) {
+                comboBoxModel.addElement(category);
+            }
+            comboCategory.setModel(comboBoxModel);
+        } catch (ClassNotFoundException | IOException e1) {
+        }
     }
-
-  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -198,28 +199,25 @@ public final class AddProduct extends javax.swing.JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             int id = productDAO.getAll().size() + 1;
             String name = txtName.getText();
-            Category selectedCategory = (Category)comboCategory.getSelectedItem();
+            Category selectedCategory = (Category) comboCategory.getSelectedItem();
             int categoryId = selectedCategory.getId();
-            double price = Double.valueOf(txtPrice.getText());
-            int quantity = Integer.valueOf(txtNum.getText());
-                try {
-                    if (!productController.addProduct(new Product(id, name, categoryId, price, quantity))) {
-                        JOptionPane.showMessageDialog(this, "Thêm thất bại", "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                } catch (HeadlessException | ClassNotFoundException | IOException e1) {
-                    e1.printStackTrace();
+            double price = Double.parseDouble(txtPrice.getText());
+            int quantity = Integer.parseInt(txtNum.getText());
+            try {
+                if (!productController.addProduct(new Product(id, name, categoryId, price, quantity))) {
+                    JOptionPane.showMessageDialog(this, "Thêm thất bại", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
-                JOptionPane.showMessageDialog(this, "Thêm thành công");
-            
+            } catch (HeadlessException | ClassNotFoundException | IOException e1) {
+            }
+            JOptionPane.showMessageDialog(this, "Thêm thành công");
+
             dispose();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(AddProduct.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (ClassNotFoundException | IOException ex) {
             Logger.getLogger(AddProduct.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnComfirmActionPerformed

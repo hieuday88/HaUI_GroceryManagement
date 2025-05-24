@@ -25,6 +25,7 @@ public class VerifyUser extends javax.swing.JFrame {
     private static final long serialVersionUID = 1L;
     private User user;
     private UserDAO userDAO;
+
     public VerifyUser(User user) {
         initComponents();
         setResizable(false);
@@ -34,29 +35,28 @@ public class VerifyUser extends javax.swing.JFrame {
         getData();
         init();
     }
-    
+
     public void getData() {
-		try {
-			List<User> users = userDAO.getAll();
-			DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-			dtm.setRowCount(0);
-			users.forEach(user -> {
-				if (!user.isVerify()) {
-					dtm.addRow(new Object[] { String.valueOf(user.getId()), user.getUsername(), user.getEmail(),
-							"Chưa xác minh" });
-				}
-			});
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-    
+        try {
+            List<User> users = userDAO.getAll();
+            DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+            dtm.setRowCount(0);
+            users.forEach(user -> {
+                if (!user.isVerify()) {
+                    dtm.addRow(new Object[]{String.valueOf(user.getId()), user.getUsername(), user.getEmail(),
+                        "Chưa xác minh"});
+                }
+            });
+        } catch (ClassNotFoundException | IOException e) {
+        }
+    }
+
     public void init() {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = table.rowAtPoint(e.getPoint());
-                int id = Integer.valueOf(String.valueOf(table.getValueAt(row, 0)));
+                int id = Integer.parseInt(String.valueOf(table.getValueAt(row, 0)));
                 try {
                     User selectedUser = userDAO.get(u -> u.getId() == id);
 
@@ -72,11 +72,11 @@ public class VerifyUser extends javax.swing.JFrame {
                         }
                     }
                 } catch (ClassNotFoundException | IOException e1) {
-                    e1.printStackTrace();
                 }
             }
         });
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

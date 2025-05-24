@@ -6,8 +6,19 @@ package view;
 
 import controller.BillController;
 import dao.BillDAO;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.swing.JFrame;
 import model.User;
 import javax.swing.JOptionPane;
+import model.Bill;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  *
@@ -18,9 +29,11 @@ public class Home extends javax.swing.JFrame {
     /**
      * Creates new form Home
      */
+    private static final long serialVersionUID = 1L;
     private User user;
     BillController billController;
     BillDAO billDAO;
+
     public Home(User user) {
         initComponents();
         this.user = user;
@@ -98,6 +111,11 @@ public class Home extends javax.swing.JFrame {
 
         btnStat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/description.png"))); // NOI18N
         btnStat.setText("Thống kê");
+        btnStat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStatActionPerformed(evt);
+            }
+        });
 
         btnBill.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/order.png"))); // NOI18N
         btnBill.setText("Quản lý hoá đơn");
@@ -171,7 +189,6 @@ public class Home extends javax.swing.JFrame {
                     .addComponent(btnChangepassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(16, 16, 16))
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(191, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -208,39 +225,42 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(btnVerify, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
                         .addComponent(btnBill, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(157, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelHello)
-                    .addComponent(btnLogout))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnChangepassword)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel5)
-                                    .addGap(3, 3, 3)
-                                    .addComponent(txtProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(jLabel8)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtBills)))
-                            .addComponent(txtRevenue, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel3))))
+                        .addGap(16, 16, 16)
+                        .addComponent(labelHello))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnLogout)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnChangepassword)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addGap(3, 3, 3)
+                            .addComponent(txtProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jLabel8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtBills)))
+                    .addComponent(txtRevenue, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel10)
+                        .addComponent(jLabel3)))
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -265,10 +285,9 @@ public class Home extends javax.swing.JFrame {
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         // TODO add your handling code here:
         int option = JOptionPane.showConfirmDialog(this, "Bạn sẽ đăng xuất ra khỏi hệ thống?", "ĐĂNG XUẤT", JOptionPane.YES_NO_OPTION);
-        if(option == JOptionPane.YES_OPTION)
-        {
-        this.dispose();
-        new Login().setVisible(true);
+        if (option == JOptionPane.YES_OPTION) {
+            this.dispose();
+            new Login().setVisible(true);
         }
     }//GEN-LAST:event_btnLogoutActionPerformed
 
@@ -296,8 +315,48 @@ public class Home extends javax.swing.JFrame {
 
     private void btnBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillActionPerformed
         // TODO add your handling code here:
+        dispose();
         new BillManagement(user).setVisible(true);
     }//GEN-LAST:event_btnBillActionPerformed
+
+    private void btnStatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatActionPerformed
+        // TODO add your handling code here:
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        Map<String, Double> revenue = new TreeMap<>();
+
+        BillDAO billDAO = new BillDAO();
+        BillController billController = new BillController(billDAO, null);
+        try {
+            List<Bill> bills = billController.getAllBills();
+
+            for (int i = 1; i <= 12; i++) {
+                String month = String.format("%02d", i);
+                revenue.put(month, revenue.getOrDefault(month, 0.0));
+            }
+
+            for (Bill bill : bills) {
+                String month = bill.getDate().substring(3, 5);
+                revenue.put(month, revenue.getOrDefault(month, 0.0) + bill.getTotal());
+            }
+
+            for (Map.Entry<String, Double> entry : revenue.entrySet()) {
+                dataset.addValue(entry.getValue(), "Doanh thu (đồng)", entry.getKey());
+            }
+
+            JFreeChart barChart = ChartFactory.createBarChart("Thống kê doanh thu", "Tháng", "Doanh thu (đồng)",
+                    dataset, PlotOrientation.VERTICAL, true, true, false);
+
+            JFrame frame = new JFrame();
+            frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            frame.setSize(960, 540);
+            frame.getContentPane().add(new ChartPanel(barChart));
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        } catch (ClassNotFoundException | IOException e1) {
+        }
+
+
+    }//GEN-LAST:event_btnStatActionPerformed
 
     /**
      * @param args the command line arguments

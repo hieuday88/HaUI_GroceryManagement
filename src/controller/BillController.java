@@ -54,7 +54,7 @@ public class BillController {
 
 	public void searchBills(List<Bill> bills, String keyword, int searchOption) {
 		List<Bill> searchedBills;
-		if (searchOption == 1)
+		if (searchOption == 0)
 			searchedBills = bills.stream().filter(bill -> bill.getId().contains(keyword)).collect(Collectors.toList());
 		else
 			searchedBills = bills.stream().filter(bill -> bill.getDate().contains(keyword))

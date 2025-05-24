@@ -20,11 +20,13 @@ public class ChangePassword extends javax.swing.JFrame {
     /**
      * Creates new form RestPass
      */
+    private static final long serialVersionUID = 1L;
     private UserDAO userDAO;
     private static User user;
     private boolean isHide1;
     private boolean isHide2;
     private boolean isHide3;
+
     public ChangePassword(User user) {
         initComponents();
         this.user = user;
@@ -32,7 +34,7 @@ public class ChangePassword extends javax.swing.JFrame {
         isHide1 = isHide2 = isHide3 = true;
         setResizable(false);
         setLocationRelativeTo(null);
-         txtReNewPass.setEchoChar('●');
+        txtReNewPass.setEchoChar('●');
         txtPassword.setEchoChar('●');
         txtNewpass.setEchoChar('●');
     }
@@ -192,13 +194,10 @@ public class ChangePassword extends javax.swing.JFrame {
 
     private void btnHide3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHide3ActionPerformed
         // TODO add your handling code here:
-        if(isHide3)
-        {
-            txtReNewPass.setEchoChar((char)0);
+        if (isHide3) {
+            txtReNewPass.setEchoChar((char) 0);
             btnHide3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/show-password-icon.png")));
-        }
-        else
-        {
+        } else {
             btnHide3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/hide-password-icon.png")));
             txtReNewPass.setEchoChar('●');
         }
@@ -207,13 +206,10 @@ public class ChangePassword extends javax.swing.JFrame {
 
     private void btnHide1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHide1ActionPerformed
         // TODO add your handling code here:
-        if(isHide1)
-        {
-            txtPassword.setEchoChar((char)0);
+        if (isHide1) {
+            txtPassword.setEchoChar((char) 0);
             btnHide1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/show-password-icon.png")));
-        }
-        else
-        {
+        } else {
             btnHide1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/hide-password-icon.png")));
             txtPassword.setEchoChar('●');
         }
@@ -222,13 +218,10 @@ public class ChangePassword extends javax.swing.JFrame {
 
     private void btnHide2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHide2ActionPerformed
         // TODO add your handling code here:
-        if(isHide2)
-        {
-            txtNewpass.setEchoChar((char)0);
+        if (isHide2) {
+            txtNewpass.setEchoChar((char) 0);
             btnHide2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/show-password-icon.png")));
-        }
-        else
-        {
+        } else {
             btnHide2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/hide-password-icon.png")));
             txtNewpass.setEchoChar('●');
         }
@@ -238,42 +231,41 @@ public class ChangePassword extends javax.swing.JFrame {
     private void btnComfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComfirmActionPerformed
         // TODO add your handling code here:
         if (!FormUtils.validateForm(getContentPane())) {
-					JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				String curPass = txtPassword.getText();
-				String newPass = txtNewpass.getText();
-				String rePass = txtReNewPass.getText();
+        String curPass = txtPassword.getText();
+        String newPass = txtNewpass.getText();
+        String rePass = txtReNewPass.getText();
 
-				if (!user.getPassword().equals(HashPassword.hashPassword(curPass))) {
-					JOptionPane.showMessageDialog(this, "Mật khẩu sai. Vui lòng thử lại.", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (!user.getPassword().equals(HashPassword.hashPassword(curPass))) {
+            JOptionPane.showMessageDialog(this, "Mật khẩu sai. Vui lòng thử lại.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				if (newPass.equals(curPass)) {
-					JOptionPane.showMessageDialog(this, "Mật khẩu mới không được trùng mật khẩu cũ.",
-							"Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (newPass.equals(curPass)) {
+            JOptionPane.showMessageDialog(this, "Mật khẩu mới không được trùng mật khẩu cũ.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				if (!newPass.equals(rePass)) {
-					JOptionPane.showMessageDialog(this, "Mật khẩu không khớp. Vui lòng nhập lại.",
-							"Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (!newPass.equals(rePass)) {
+            JOptionPane.showMessageDialog(this, "Mật khẩu không khớp. Vui lòng nhập lại.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				user.setPassword(HashPassword.hashPassword(newPass));
-				try {
-					userDAO.update(user);
-					JOptionPane.showMessageDialog(this, "Thay đổi mật khẩu thành công.");
-				} catch (ClassNotFoundException | IOException e1) {
-					e1.printStackTrace();
-				}
+        user.setPassword(HashPassword.hashPassword(newPass));
+        try {
+            userDAO.update(user);
+            JOptionPane.showMessageDialog(this, "Thay đổi mật khẩu thành công.");
+        } catch (ClassNotFoundException | IOException e1) {
+        }
 
-				dispose();			
+        dispose();
     }//GEN-LAST:event_btnComfirmActionPerformed
 
     private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed

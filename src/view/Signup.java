@@ -1,4 +1,3 @@
-
 package view;
 
 import dao.UserDAO;
@@ -17,10 +16,12 @@ public class Signup extends javax.swing.JFrame {
     /**
      * Creates new form SignUpView
      */
+    private static final long serialVersionUID = 1L;
     private SendMail sm;
     private UserDAO userDAO;
     private boolean isHide1;
     private boolean isHide2;
+
     public Signup() {
         initComponents();
         setResizable(false);
@@ -243,15 +244,15 @@ public class Signup extends javax.swing.JFrame {
 
     private void txtOtpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtOtpActionPerformed
         // TODO add your handling code here:
-                               
+
     }//GEN-LAST:event_txtOtpActionPerformed
 
     private void btnSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignupActionPerformed
         // TODO add your handling code here:
         if (!FormUtils.validateForm(this.getContentPane())) {
-            JOptionPane.showMessageDialog(this, 
-                "Vui lòng nhập đầy đủ thông tin", 
-                "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng nhập đầy đủ thông tin",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -262,39 +263,38 @@ public class Signup extends javax.swing.JFrame {
         String otp = txtOtp.getText();
 
         if (!password.equals(rePassword)) {
-            JOptionPane.showMessageDialog(this, 
-                "Mật khẩu nhập lại không khớp", 
-                "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Mật khẩu nhập lại không khớp",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         if (!otp.equals(sm.getOtp())) {
-            JOptionPane.showMessageDialog(this, 
-                "Mã OTP không chính xác", 
-                "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Mã OTP không chính xác",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
             UserDAO userDAO = new UserDAO();
             int id = userDAO.getAll().size() + 1;
-            User newUser = new User(id, username, email ,password, false);
-            
+            User newUser = new User(id, username, email, password, false);
+
             if (userDAO.add(newUser)) {
                 JOptionPane.showMessageDialog(this, "Đăng ký thành công");
                 this.dispose();
                 new Login().setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(this, 
-                    "Tên đăng nhập hoặc email đã tồn tại", 
-                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                        "Tên đăng nhập hoặc email đã tồn tại",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         } catch (ClassNotFoundException | IOException e) {
-            JOptionPane.showMessageDialog(this, 
-                "Lỗi hệ thống: " + e.getMessage(), 
-                "Lỗi", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }			
+            JOptionPane.showMessageDialog(this,
+                    "Lỗi hệ thống: " + e.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnSignupActionPerformed
 
     private void btnSigninActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSigninActionPerformed
@@ -304,53 +304,48 @@ public class Signup extends javax.swing.JFrame {
 
     private void btnOtpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOtpActionPerformed
         // TODO add your handling code here:
-         String username = txtUsername.getText();
-				String email = txtEmail.getText();
+        String username = txtUsername.getText();
+        String email = txtEmail.getText();
 
-				if (email.isEmpty()) {
-					JOptionPane.showMessageDialog(this, "Vui lòng điền email.", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền email.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				try {
-					if (userDAO.isUserExist(username, email)) {
-						JOptionPane.showMessageDialog(this,
-								"Đã tồn tại tài khoản với tên tài khoản hoặc email này. Vui lòng thử lại.", "Error",
-								JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+        try {
+            if (userDAO.isUserExist(username, email)) {
+                JOptionPane.showMessageDialog(this,
+                        "Đã tồn tại tài khoản với tên tài khoản hoặc email này. Vui lòng thử lại.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (ClassNotFoundException | IOException e1) {
+            e1.printStackTrace();
+        }
 
-				if (!sm.sendOtp(txtEmail.getText())) {
-					JOptionPane.showMessageDialog(this,
-							"Có lỗi trong quá trình lấy mã xác nhận. Vui lòng thử lại", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (!sm.sendOtp(txtEmail.getText())) {
+            JOptionPane.showMessageDialog(this,
+                    "Có lỗi trong quá trình lấy mã xác nhận. Vui lòng thử lại", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				JOptionPane.showMessageDialog(this, "Mã xác nhận đã được gửi vào email. Vui lòng kiểm tra.");			
-    JOptionPane.showMessageDialog(this,
-            "Mã xác nhận đã được gửi (OTP: " + sm.getOtp() + ")", "Thông báo",
-            JOptionPane.INFORMATION_MESSAGE);
-    
+        JOptionPane.showMessageDialog(this, "Mã xác nhận đã được gửi vào email. Vui lòng kiểm tra.");
+        JOptionPane.showMessageDialog(this,
+                "Mã xác nhận đã được gửi (OTP: " + sm.getOtp() + ")", "Thông báo",
+                JOptionPane.INFORMATION_MESSAGE);
+
 
     }//GEN-LAST:event_btnOtpActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
         // TODO add your handling code here:
-        if(isHide1)
-        {
-            txtPassword.setEchoChar((char)0);
+        if (isHide1) {
+            txtPassword.setEchoChar((char) 0);
             jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/show-password-icon.png")));
-        }
-        else
-        {
+        } else {
             jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/hide-password-icon.png")));
             txtPassword.setEchoChar('●');
         }
@@ -359,14 +354,11 @@ public class Signup extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-         // TODO add your handling code here:
-        if(isHide2)
-        {
-            txtrePassword.setEchoChar((char)0);
+        // TODO add your handling code here:
+        if (isHide2) {
+            txtrePassword.setEchoChar((char) 0);
             jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/show-password-icon.png")));
-        }
-        else
-        {
+        } else {
             jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/hide-password-icon.png")));
             txtrePassword.setEchoChar('●');
         }

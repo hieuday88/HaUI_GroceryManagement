@@ -7,8 +7,7 @@ package view;
 import controller.CategoryController;
 import dao.CategoryDAO;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
@@ -39,91 +38,96 @@ public class CategoryManagement extends javax.swing.JFrame {
     private CategoryController categoryController;
     private CategoryDAO categoryDAO;
     private Timer searchTimer;
+
     public CategoryManagement(User user) {
         try {
             initComponents();
             addWindowListener(new java.awt.event.WindowAdapter() {
-        @Override
-        public void windowClosing(java.awt.event.WindowEvent e) {
-            new Home(user).setVisible(true);
-        }
-});
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    new Home(user).setVisible(true);
+                }
+            });
 
             categoryDAO = new CategoryDAO();
             categoryController = new CategoryController(categoryDAO, this);
             setResizable(false);
             setLocationRelativeTo(null);
             updateCategoryTable(categoryController.getAllCategories());
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(CategoryManagement.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (ClassNotFoundException | IOException ex) {
             Logger.getLogger(CategoryManagement.class.getName()).log(Level.SEVERE, null, ex);
         }
         initSearchFunctionality();
     }
-    public void updateCategoryTable(List<Category> categories) {
-		DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-		dtm.setRowCount(0);
-		categories.forEach(category -> {
-			dtm.addRow(
-					new Object[] { String.valueOf(category.getId()), category.getName(), category.getDescription() });
-		});
-	}
 
-	public Category getSelectedCategory(){
-		DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-		int row = table.getSelectedRow();
-		if (row == -1)
-			return null;
-		int id = Integer.valueOf(String.valueOf(dtm.getValueAt(row, 0)));
-		try {
-			Category category = categoryController.getCategoryById(id);
-			return category;
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-    
- 
-private void initSearchFunctionality() {
-    searchTimer = new Timer(500, e -> {
-        performSearch();
-    });
-    searchTimer.setRepeats(false);
-    
-    txtFind.getDocument().addDocumentListener(new DocumentListener() {
-        @Override
-        public void insertUpdate(DocumentEvent e) { restartTimer(); }
-        
-        @Override
-        public void removeUpdate(DocumentEvent e) { restartTimer(); }
-        
-        @Override
-        public void changedUpdate(DocumentEvent e) { restartTimer(); }
-        
-        private void restartTimer() {
-            if (searchTimer.isRunning()) {
-                searchTimer.restart();
-            } else {
-                searchTimer.start();
-            }
+    public void updateCategoryTable(List<Category> categories) {
+        DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+        dtm.setRowCount(0);
+        categories.forEach(category -> {
+            dtm.addRow(
+                    new Object[]{String.valueOf(category.getId()), category.getName(), category.getDescription()});
+        });
+    }
+
+    public Category getSelectedCategory() {
+        DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return null;
         }
-    });
-}
+        int id = Integer.parseInt(String.valueOf(dtm.getValueAt(row, 0)));
+        try {
+            Category category = categoryController.getCategoryById(id);
+            return category;
+        } catch (ClassNotFoundException | IOException e) {
+        }
+        return null;
+    }
+
+    private void initSearchFunctionality() {
+        searchTimer = new Timer(500, e -> {
+            performSearch();
+        });
+        searchTimer.setRepeats(false);
+
+        txtFind.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                restartTimer();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                restartTimer();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                restartTimer();
+            }
+
+            private void restartTimer() {
+                if (searchTimer.isRunning()) {
+                    searchTimer.restart();
+                } else {
+                    searchTimer.start();
+                }
+            }
+        });
+    }
 
     private void performSearch() {
-    String keyword = txtFind.getText().trim();
-    try {
-        if (!keyword.isEmpty()) {
-            categoryController.searchCategories(keyword);
-        } else {      
-            updateCategoryTable(categoryController.getAllCategories());
+        String keyword = txtFind.getText().trim();
+        try {
+            if (!keyword.isEmpty()) {
+                categoryController.searchCategories(keyword);
+            } else {
+                updateCategoryTable(categoryController.getAllCategories());
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi tìm kiếm: " + ex.getMessage());
         }
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, "Lỗi tìm kiếm: " + ex.getMessage());
     }
-}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -302,74 +306,71 @@ private void initSearchFunctionality() {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnReplaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReplaceActionPerformed
-     
-            // TODO add your handling code here:
-            Category category = getSelectedCategory();
-            if (category == null) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm", "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            new EditCategory(categoryController, category).setVisible(true);
-       
+
+        // TODO add your handling code here:
+        Category category = getSelectedCategory();
+        if (category == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        new EditCategory(categoryController, category).setVisible(true);
+
     }//GEN-LAST:event_btnReplaceActionPerformed
 
     private void btnDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelActionPerformed
         // TODO add your handling code here:
         Category category = getSelectedCategory();
-				if (category == null) {
-					JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (category == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				int option = JOptionPane.showConfirmDialog(this,
-						"Bạn có chắc chắn muốn xóa không?", "XOÁ",JOptionPane.YES_NO_OPTION);
+        int option = JOptionPane.showConfirmDialog(this,
+                "Bạn có chắc chắn muốn xóa không?", "XOÁ", JOptionPane.YES_NO_OPTION);
 
-				if (option == JOptionPane.YES_OPTION) {
-					try {
-						if (!categoryController.deleteCategory(category)) {
-							JOptionPane.showMessageDialog(this, "Xóa thất bại", "Error",
-									JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-					} catch (HeadlessException | ClassNotFoundException | IOException e1) {
-						e1.printStackTrace();
-					}
+        if (option == JOptionPane.YES_OPTION) {
+            try {
+                if (!categoryController.deleteCategory(category)) {
+                    JOptionPane.showMessageDialog(this, "Xóa thất bại", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (HeadlessException | ClassNotFoundException | IOException e1) {
+            }
 
-					try {
-						updateCategoryTable(categoryController.getAllCategories());
-					} catch (ClassNotFoundException | IOException e1) {
-						e1.printStackTrace();
-					}
-					JOptionPane.showMessageDialog(this, "Xóa thành công");
-                                }
+            try {
+                updateCategoryTable(categoryController.getAllCategories());
+            } catch (ClassNotFoundException | IOException e1) {
+            }
+            JOptionPane.showMessageDialog(this, "Xóa thành công");
+        }
     }//GEN-LAST:event_btnDelActionPerformed
 
     private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
         // TODO add your handling code here:
         Category category = getSelectedCategory();
-				if (category == null) {
-					JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (category == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				new ProductByCategory(category).setVisible(true);
+        new ProductByCategory(category).setVisible(true);
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         // TODO add your handling code here:
         MessageFormat header = new MessageFormat(jLabel1.getText());
-				MessageFormat footer = new MessageFormat("HaUI Grocery");
-				try {
-					PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
-					set.add(OrientationRequested.PORTRAIT);
-					table.print(JTable.PrintMode.FIT_WIDTH, header, footer, true, set, true);
-					JOptionPane.showMessageDialog(null, "Print successfully");
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
+        MessageFormat footer = new MessageFormat("HaUI Grocery");
+        try {
+            PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+            set.add(OrientationRequested.PORTRAIT);
+            table.print(JTable.PrintMode.FIT_WIDTH, header, footer, true, set, true);
+            JOptionPane.showMessageDialog(null, "Print successfully");
+        } catch (HeadlessException | PrinterException e1) {
+        }
     }//GEN-LAST:event_btnExportActionPerformed
 
     private void txtFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFindActionPerformed

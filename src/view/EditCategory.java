@@ -25,8 +25,8 @@ public class EditCategory extends javax.swing.JFrame {
     private CategoryDAO categoryDAO;
     private CategoryController categoryController;
     private Category category;
-    public EditCategory(CategoryController categoryController, Category category)   
-    {
+
+    public EditCategory(CategoryController categoryController, Category category) {
         initComponents();
         categoryDAO = new CategoryDAO();
         this.category = category;
@@ -147,11 +147,10 @@ public class EditCategory extends javax.swing.JFrame {
                 return;
             }
         } catch (HeadlessException | ClassNotFoundException | IOException e1) {
-            e1.printStackTrace();
         }
         JOptionPane.showMessageDialog(this, "Sửa thành công");
         dispose();
-			
+
     }//GEN-LAST:event_btnSaveActionPerformed
 
     /**

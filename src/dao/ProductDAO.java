@@ -10,7 +10,7 @@ import util.FileConnector;
 
 public class ProductDAO implements DAO<Product> {
 	private final String FILE_PATH = "/src/db/products.bin";
-	private final FileConnector<Product> fileConnector = new FileConnector<Product>();
+	private final FileConnector<Product> fileConnector = new FileConnector<>();
 
 	@Override
 	public Product get(Predicate<Product> predicate) throws ClassNotFoundException, IOException {

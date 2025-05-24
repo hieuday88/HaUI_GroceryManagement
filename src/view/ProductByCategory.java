@@ -21,9 +21,11 @@ public class ProductByCategory extends javax.swing.JFrame {
     /**
      * Creates new form ProductByCategory
      */
+    private static final long serialVersionUID = 1L;
     int categoryId;
     private ProductDAO productDAO;
     private ProductController productController;
+
     public ProductByCategory(Category category) {
         initComponents();
         setLocationRelativeTo(null);
@@ -31,25 +33,25 @@ public class ProductByCategory extends javax.swing.JFrame {
         categoryId = category.getId();
         txtTittle.setText(category.getName());
         productDAO = new ProductDAO();
-	productController = new ProductController(productDAO, null);
+        productController = new ProductController(productDAO, null);
         getData();
     }
-    
-    public void getData(){
-		try {
-			List<Product> products = productController.getAllProducts();
-			DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-			dtm.setRowCount(0);
-			products.forEach(product -> {
-				if (product.getCategoryId() == categoryId) {
-					dtm.addRow(new Object[] { String.valueOf(product.getId()), product.getName(),
-							String.valueOf(product.getPrice()), String.valueOf(product.getQuantity()) });
-				}
-			});
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
-	}
+
+    public void getData() {
+        try {
+            List<Product> products = productController.getAllProducts();
+            DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+            dtm.setRowCount(0);
+            products.forEach(product -> {
+                if (product.getCategoryId() == categoryId) {
+                    dtm.addRow(new Object[]{String.valueOf(product.getId()), product.getName(),
+                        String.valueOf(product.getPrice()), String.valueOf(product.getQuantity())});
+                }
+            });
+        } catch (ClassNotFoundException | IOException e) {
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

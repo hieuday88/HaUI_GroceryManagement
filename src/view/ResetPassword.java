@@ -22,8 +22,10 @@ public class ResetPassword extends javax.swing.JFrame {
     /**
      * Creates new form ResetPassword
      */
+    private static final long serialVersionUID = 1L;
     private SendMail sm;
     private UserDAO userDAO;
+
     public ResetPassword() {
         initComponents();
         setResizable(false);
@@ -142,89 +144,83 @@ public class ResetPassword extends javax.swing.JFrame {
         // TODO add your handling code here:
         String email = txtEmail.getText();
 
-				if (email.isEmpty()) {
-					JOptionPane.showMessageDialog(this, "Vui lòng điền email.", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền email.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				if (!sm.sendOtp(txtEmail.getText())) {
-					JOptionPane.showMessageDialog(this,
-							"Có lỗi trong quá trình lấy mã xác nhận. Vui lòng thử lại", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (!sm.sendOtp(txtEmail.getText())) {
+            JOptionPane.showMessageDialog(this,
+                    "Có lỗi trong quá trình lấy mã xác nhận. Vui lòng thử lại", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				JOptionPane.showMessageDialog(this,
-						"Mã xác nhận đã được gửi vào email. Vui lòng kiểm tra.");
-			
+        JOptionPane.showMessageDialog(this,
+                "Mã xác nhận đã được gửi vào email. Vui lòng kiểm tra.");
+
     }//GEN-LAST:event_btnSendActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         // TODO add your handling code here:
         String email = txtEmail.getText();
-				String otp = txtOtp.getText();
+        String otp = txtOtp.getText();
 
-				if (!FormUtils.validateForm(getContentPane())) {
-					JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (!FormUtils.validateForm(getContentPane())) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				try {
-					User user = userDAO.get(u -> u.getEmail().equals(email));
-					if (user == null) {
-						JOptionPane.showMessageDialog(this, "Email không tồn tại. Vui lòng thử lại.",
-								"Error", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+        try {
+            User user = userDAO.get(u -> u.getEmail().equals(email));
+            if (user == null) {
+                JOptionPane.showMessageDialog(this, "Email không tồn tại. Vui lòng thử lại.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (ClassNotFoundException | IOException e1) {
+        }
 
-				if (!otp.equals(sm.getOtp())) {
-					JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại mã xác nhận", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (!otp.equals(sm.getOtp())) {
+            JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại mã xác nhận", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				String password = PasswordGenerator.generatePassword();
+        String password = PasswordGenerator.generatePassword();
 
-				if (!sm.sendNewPassword(email, password)) {
-					JOptionPane.showMessageDialog(this,
-							"Có lỗi trong quá trình lấy lại mật khẩu. Vui lòng thử lại", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (!sm.sendNewPassword(email, password)) {
+            JOptionPane.showMessageDialog(this,
+                    "Có lỗi trong quá trình lấy lại mật khẩu. Vui lòng thử lại", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				try {
-					User user = userDAO.get(u -> u.getEmail().equals(email));
-					user.setPassword(HashPassword.hashPassword(password));
-					if (!userDAO.update(user)) {
-						JOptionPane.showMessageDialog(this,
-								"Có lỗi trong quá trình lấy lại mật khẩu. Vui lòng thử lại", "Error",
-								JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+        try {
+            User user = userDAO.get(u -> u.getEmail().equals(email));
+            user.setPassword(HashPassword.hashPassword(password));
+            if (!userDAO.update(user)) {
+                JOptionPane.showMessageDialog(this,
+                        "Có lỗi trong quá trình lấy lại mật khẩu. Vui lòng thử lại", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (ClassNotFoundException | IOException e1) {
+        }
 
-				JOptionPane.showMessageDialog(this,
-						"Mật khẩu mới đã được gửi về email. Vui lòng kiểm tra");
+        JOptionPane.showMessageDialog(this,
+                "Mật khẩu mới đã được gửi về email. Vui lòng kiểm tra");
 
-				this.dispose();
-				new Login().setVisible(true);
+        this.dispose();
+        new Login().setVisible(true);
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
         this.dispose();
-				new Login().setVisible(true);
+        new Login().setVisible(true);
     }//GEN-LAST:event_btnBackActionPerformed
 
     /**

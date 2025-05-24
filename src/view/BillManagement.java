@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import model.Bill;
 import model.User;
@@ -27,73 +30,126 @@ public class BillManagement extends javax.swing.JFrame {
     /**
      * Creates new form BillManager
      */
+    private static final long serialVersionUID = 1L;
     private BillController billController;
     private BillDAO billDAO;
-    private User user;
+    private Timer searchTimer;
+
     public BillManagement(User user) {
         initComponents();
-        this.user = user;
+        setResizable(false);
+        setLocationRelativeTo(null);
         addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				dispose();
-				new Home(user).setVisible(true);
-			}
-		});
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dispose();
+                new Home(user).setVisible(true);
+            }
+        });
         billDAO = new BillDAO();
-	billController = new BillController(billDAO, this);
+        billController = new BillController(billDAO, this);
         try {
-			updateBillTable(billController.getAllBills());
-		} catch (ClassNotFoundException | IOException e) {
-		}
+            updateBillTable(billController.getAllBills());
+        } catch (ClassNotFoundException | IOException e) {
+        }
+        initSearchFunctionality();
 
     }
-    
+
     private List<Bill> getDataFromTable() {
-		List<Bill> bills = new ArrayList<>();
-		DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-		int rowCount = dtm.getRowCount();
-		for (int i = 0; i < rowCount; i++) {
-			String id = String.valueOf(dtm.getValueAt(i, 0));
-			try {
-				Bill bill = billController.getBillById(id);
-				bills.add(bill);
-			} catch (ClassNotFoundException | IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return bills;
-	}
+        List<Bill> bills = new ArrayList<>();
+        DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+        int rowCount = dtm.getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            String id = String.valueOf(dtm.getValueAt(i, 0));
+            try {
+                Bill bill = billController.getBillById(id);
+                bills.add(bill);
+            } catch (ClassNotFoundException | IOException e) {
+            }
+        }
+        return bills;
+    }
 
-	public void updateBillTable(List<Bill> bills) {
-		DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-		dtm.setRowCount(0);
-		UserDAO userDao = new UserDAO();
-		UserController userController = new UserController(userDao);
-		bills.forEach(bill -> {
-			try {
-				User user = userController.getUserById(bill.getAdminId());
-				dtm.addRow(new Object[] { bill.getId(), bill.getName(), user.getUsername(), bill.getDate(),
-						bill.getTotal() });
-			} catch (ClassNotFoundException | IOException e) {
-			}
-		});
-	}
+    public void updateBillTable(List<Bill> bills) {
+        DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+        dtm.setRowCount(0);
+        UserDAO userDao = new UserDAO();
+        UserController userController = new UserController(userDao);
+        bills.forEach(bill -> {
+            try {
+                User user = userController.getUserById(bill.getAdminId());
+                if (user == null) {
+                    JOptionPane.showMessageDialog(this, "Không có thông tin người dùng");
+                    return;
+                }
+                dtm.addRow(new Object[]{bill.getId(), bill.getName(), user.getUsername(), bill.getDate(),
+                    bill.getTotal()});
+            } catch (ClassNotFoundException | IOException e) {
+            }
+        });
+    }
 
-	public Bill getSelectedBill() {
-		DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-		int row = table.getSelectedRow();
-		if (row == -1)
-			return null;
-		String id = String.valueOf(dtm.getValueAt(row, 0));
-		try {
-			Bill bill = billController.getBillById(id);
-			return bill;
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    public Bill getSelectedBill() {
+        DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return null;
+        }
+        String id = String.valueOf(dtm.getValueAt(row, 0));
+        try {
+            Bill bill = billController.getBillById(id);
+            return bill;
+        } catch (ClassNotFoundException | IOException e) {
+        }
+        return null;
+    }
+
+    private void initSearchFunctionality() {
+        searchTimer = new Timer(300, e -> {
+            performSearch();
+        });
+        searchTimer.setRepeats(false);
+
+        txtFind.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                restartTimer();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                restartTimer();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                restartTimer();
+            }
+
+            private void restartTimer() {
+                if (searchTimer.isRunning()) {
+                    searchTimer.restart();
+                } else {
+                    searchTimer.start();
+                }
+            }
+        });
+    }
+
+    private void performSearch() {
+        String keyword = txtFind.getText().trim();
+        try {
+            if (!keyword.isEmpty()) {
+                int searchOption = sortComboBox.getSelectedIndex();
+                billController.searchBills(getDataFromTable(), keyword, searchOption);
+            } else {
+                updateBillTable(billController.getAllBills());
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi tìm kiếm: " + ex.getMessage());
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -122,10 +178,7 @@ public class BillManagement extends javax.swing.JFrame {
         table.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "Mã hoá đơn", "Tên khách hàng", "Người tạo", "Ngày tạo", "Tổng tiền"
@@ -160,7 +213,12 @@ public class BillManagement extends javax.swing.JFrame {
         jLabel2.setText("Tìm kiếm");
 
         sortComboBox.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        sortComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Không sắp xếp", "Mã hoá đơn", "Ngày tạo" }));
+        sortComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mã hoá đơn", "Ngày tạo" }));
+        sortComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortComboBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -211,15 +269,19 @@ public class BillManagement extends javax.swing.JFrame {
     private void txtDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDetailActionPerformed
         // TODO add your handling code here:
         Bill bill = getSelectedBill();
-				if (bill == null) {
-					JOptionPane.showMessageDialog(this, "Vui lòng chọn hoá đơn", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (bill == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn hoá đơn", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				new BillDetail(bill).setVisible(true);
-        
+        new BillDetail(bill).setVisible(true);
+
     }//GEN-LAST:event_txtDetailActionPerformed
+
+    private void sortComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sortComboBoxActionPerformed
 
     /**
      * @param args the command line arguments

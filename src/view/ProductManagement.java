@@ -10,9 +10,9 @@ import dao.CategoryDAO;
 import dao.ProductDAO;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import service.ProductSelection;
  *
  * @author hieuk
  */
-public class ProductManagement extends javax.swing.JFrame{
+public class ProductManagement extends javax.swing.JFrame {
 
     /**
      * Creates new form CategoryManager
@@ -50,15 +50,16 @@ public class ProductManagement extends javax.swing.JFrame{
     private Timer searchTimer;
     private Timer sortTimer;
     private boolean isBuying;
+
     public ProductManagement(User user) {
-       addWindowListener(new java.awt.event.WindowAdapter() {
-        @Override
-        public void windowClosing(java.awt.event.WindowEvent e) {
-            new Home(user).setVisible(true);
-        }
-});
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                new Home(user).setVisible(true);
+            }
+        });
         try {
-            initComponents();          
+            initComponents();
             categoryDAO = new CategoryDAO();
             productDAO = new ProductDAO();
             categoryController = new CategoryController(categoryDAO, null);
@@ -66,16 +67,14 @@ public class ProductManagement extends javax.swing.JFrame{
             setResizable(false);
             setLocationRelativeTo(null);
             updateProductTable(productDAO.getAll());
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ProductManagement.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (ClassNotFoundException | IOException ex) {
             Logger.getLogger(ProductManagement.class.getName()).log(Level.SEVERE, null, ex);
         }
         initSearchFunctionality();
         initSortFunctionality();
     }
-    public ProductManagement(boolean isBuying, ProductSelection listener)
-    {
+
+    public ProductManagement(boolean isBuying, ProductSelection listener) {
         try {
             initComponents();
             this.ps = listener;
@@ -94,154 +93,154 @@ public class ProductManagement extends javax.swing.JFrame{
         initSortFunctionality();
         checkBuy();
     }
+
     public void updateProductTable(List<Product> products) {
-		DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-		dtm.setRowCount(0);
-		products.forEach(product -> {
-			try {
-				dtm.addRow(new Object[] { String.valueOf(product.getId()), product.getName(),
-						categoryController.getCategoryById(product.getCategoryId()).getName(),
-						String.valueOf(product.getPrice()), String.valueOf(product.getQuantity()) });
-			} catch (ClassNotFoundException | IOException e) {
-			}
-		});
-	}
+        DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+        dtm.setRowCount(0);
+        products.forEach(product -> {
+            try {
+                dtm.addRow(new Object[]{String.valueOf(product.getId()), product.getName(),
+                    categoryController.getCategoryById(product.getCategoryId()).getName(),
+                    String.valueOf(product.getPrice()), String.valueOf(product.getQuantity())});
+            } catch (ClassNotFoundException | IOException e) {
+            }
+        });
+    }
 
-	public Product getSelectedProduct() {
-		DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-		int row = table.getSelectedRow();
-		if (row == -1)
-			return null;
-		int id = Integer.valueOf(String.valueOf(dtm.getValueAt(row, 0)));
-		try {
-			Product product = productController.getProductById(id);
-			return product;
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    public Product getSelectedProduct() {
+        DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return null;
+        }
+        int id = Integer.parseInt(String.valueOf(dtm.getValueAt(row, 0)));
+        try {
+            Product product = productController.getProductById(id);
+            return product;
+        } catch (ClassNotFoundException | IOException e) {
+        }
+        return null;
+    }
 
-	public List<Product> getDataFromTable() {
-		List<Product> products = new ArrayList<>();
-		DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-		int rowCount = dtm.getRowCount();
-		for (int i = 0; i < rowCount; i++) {
-			int id = Integer.parseInt(dtm.getValueAt(i, 0).toString());
-			try {
-				Product product = productController.getProductById(id);
-				products.add(product);
-			} catch (ClassNotFoundException | IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return products;
-	}
-    
-    private void initSearchFunctionality() {
-    searchTimer = new Timer(300, e -> {
-        performSearch();
-    });
-    searchTimer.setRepeats(false);
-    
-    txtFind.getDocument().addDocumentListener(new DocumentListener() {
-        @Override
-        public void insertUpdate(DocumentEvent e) { restartTimer(); }
-        
-        @Override
-        public void removeUpdate(DocumentEvent e) { restartTimer(); }
-        
-        @Override
-        public void changedUpdate(DocumentEvent e) { restartTimer(); }
-        
-        private void restartTimer() {
-            if (searchTimer.isRunning()) {
-                searchTimer.restart();
-            } else {
-                searchTimer.start();
+    public List<Product> getDataFromTable() {
+        List<Product> products = new ArrayList<>();
+        DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+        int rowCount = dtm.getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            int id = Integer.parseInt(dtm.getValueAt(i, 0).toString());
+            try {
+                Product product = productController.getProductById(id);
+                products.add(product);
+            } catch (ClassNotFoundException | IOException e) {
             }
         }
-    });
-}
+        return products;
+    }
+
+    private void initSearchFunctionality() {
+        searchTimer = new Timer(300, e -> {
+            performSearch();
+        });
+        searchTimer.setRepeats(false);
+
+        txtFind.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                restartTimer();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                restartTimer();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                restartTimer();
+            }
+
+            private void restartTimer() {
+                if (searchTimer.isRunning()) {
+                    searchTimer.restart();
+                } else {
+                    searchTimer.start();
+                }
+            }
+        });
+    }
 
     private void performSearch() {
-    String keyword = txtFind.getText().trim();
-    try {
-        if (!keyword.isEmpty()) {
-            productController.searchProducts(keyword);
-        } else {      
-            updateProductTable(productController.getAllProducts());
+        String keyword = txtFind.getText().trim();
+        try {
+            if (!keyword.isEmpty()) {
+                productController.searchProducts(keyword);
+            } else {
+                updateProductTable(productController.getAllProducts());
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi tìm kiếm: " + ex.getMessage());
         }
-    } catch (IOException | ClassNotFoundException ex) {
-        JOptionPane.showMessageDialog(this, "Lỗi tìm kiếm: " + ex.getMessage());
     }
-}
+
     private void initSortFunctionality() {
-    sortTimer = new Timer(300, e -> {
-        int selectedIndex = sortComboBox.getSelectedIndex();
-        
-        switch(selectedIndex) {
-            case 0:
-                productController.sortProductsById(getDataFromTable(), true); 
-                break;
-            case 1: 
-                productController.sortProductsByPrice(getDataFromTable(), true);
-                break;
-            case 2: 
-                productController.sortProductsByPrice(getDataFromTable(), false);
-                break;
-            default:
-                break;
-        }
-    });
-    sortTimer.setRepeats(false);
-    sortComboBox.addActionListener(e -> {
-        if (sortTimer.isRunning()) {
-            sortTimer.restart();
-        } else {
-            sortTimer.start();
-        }
-    });
-    
+        sortTimer = new Timer(300, e -> {
+            int selectedIndex = sortComboBox.getSelectedIndex();
+
+            switch (selectedIndex) {
+                case 0 -> productController.sortProductsById(getDataFromTable(), true);
+                case 1 -> productController.sortProductsByPrice(getDataFromTable(), true);
+                case 2 -> productController.sortProductsByPrice(getDataFromTable(), false);
+                default -> {
+                }
+            }
+        });
+        sortTimer.setRepeats(false);
+        sortComboBox.addActionListener(e -> {
+            if (sortTimer.isRunning()) {
+                sortTimer.restart();
+            } else {
+                sortTimer.start();
+            }
+        });
+
     }
-    
-    public void checkBuy()
-    {
+
+    public void checkBuy() {
         if (isBuying) {
-			btnAdd.setVisible(false);
-			btnReplace.setVisible(false);
-			btnDel.setVisible(false);
-			btnExport.setVisible(false);
+            btnAdd.setVisible(false);
+            btnReplace.setVisible(false);
+            btnDel.setVisible(false);
+            btnExport.setVisible(false);
 
-			table.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-					if (e.getClickCount() == 2) {
-						int selectedRow = table.getSelectedRow();
-						if (selectedRow != -1) {
-							int productId = Integer.parseInt((String) (dtm.getValueAt(selectedRow, 0)));
-							int productQuantity = Integer.parseInt((String) (dtm.getValueAt(selectedRow, 4)));
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+                    if (e.getClickCount() == 2) {
+                        int selectedRow = table.getSelectedRow();
+                        if (selectedRow != -1) {
+                            int productId = Integer.parseInt((String) (dtm.getValueAt(selectedRow, 0)));
+                            int productQuantity = Integer.parseInt((String) (dtm.getValueAt(selectedRow, 4)));
 
-							int buyQuantity = Integer.parseInt(JOptionPane.showInputDialog("Nhập số lượng: "));
-							if (buyQuantity > productQuantity) {
-								JOptionPane.showMessageDialog(ProductManagement.this, "Không đủ số lượng", "Error",
-										JOptionPane.ERROR_MESSAGE);
-								return;
-							}
+                            int buyQuantity = Integer.parseInt(JOptionPane.showInputDialog("Nhập số lượng: "));
+                            if (buyQuantity > productQuantity) {
+                                JOptionPane.showMessageDialog(ProductManagement.this, "Không đủ số lượng", "Error",
+                                        JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
 
-							Product selectedProduct;
-							try {
-								selectedProduct = productController.getProductById(productId);
-								ps.onProductSelected(selectedProduct, buyQuantity);
-								dispose();
-							} catch (ClassNotFoundException | IOException e1) {
-							}
-						}
-					}
-				}
-			});
-		}
+                            Product selectedProduct;
+                            try {
+                                selectedProduct = productController.getProductById(productId);
+                                ps.onProductSelected(selectedProduct, buyQuantity);
+                                dispose();
+                            } catch (ClassNotFoundException | IOException e1) {
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -425,104 +424,97 @@ public class ProductManagement extends javax.swing.JFrame{
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
-        new AddProduct(productController ,null).setVisible(true);
+        new AddProduct(productController, null).setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnReplaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReplaceActionPerformed
         Product product = getSelectedProduct();
-				if (product == null) {
-					JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				new EditProduct(productController, product).setVisible(true);
+        if (product == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        new EditProduct(productController, product).setVisible(true);
     }//GEN-LAST:event_btnReplaceActionPerformed
 
     private void btnDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelActionPerformed
         Product product = getSelectedProduct();
-				if (product == null) {
-					JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (product == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				int option = JOptionPane.showConfirmDialog(this,
-						"Bạn có chắc chắn muốn xóa không?", "XOÁ",JOptionPane.YES_NO_OPTION);
+        int option = JOptionPane.showConfirmDialog(this,
+                "Bạn có chắc chắn muốn xóa không?", "XOÁ", JOptionPane.YES_NO_OPTION);
 
-				if (option == JOptionPane.YES_OPTION) {
-					try {
-						if (!productController.deleteProduct(product)) {
-							JOptionPane.showMessageDialog(this, "Xóa thất bại", "Error",
-									JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-					} catch (HeadlessException | ClassNotFoundException | IOException e1) {
-						e1.printStackTrace();
-					}
+        if (option == JOptionPane.YES_OPTION) {
+            try {
+                if (!productController.deleteProduct(product)) {
+                    JOptionPane.showMessageDialog(this, "Xóa thất bại", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (HeadlessException | ClassNotFoundException | IOException e1) {
+            }
 
-					try {
-						updateProductTable(productController.getAllProducts());
-					} catch (ClassNotFoundException | IOException e1) {
-						e1.printStackTrace();
-					}
-					JOptionPane.showMessageDialog(this, "Xóa thành công");
-				}
-			
+            try {
+                updateProductTable(productController.getAllProducts());
+            } catch (ClassNotFoundException | IOException e1) {
+            }
+            JOptionPane.showMessageDialog(this, "Xóa thành công");
+        }
+
     }//GEN-LAST:event_btnDelActionPerformed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         // TODO add your handling code here:
         MessageFormat header = new MessageFormat(jLabel1.getText());
-				MessageFormat footer = new MessageFormat("HaUI Grocery");
-				try {
-					PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
-					set.add(OrientationRequested.PORTRAIT);
-					table.print(JTable.PrintMode.FIT_WIDTH, header, footer, true, set, true);
-					JOptionPane.showMessageDialog(null, "Print successfully");
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
+        MessageFormat footer = new MessageFormat("HaUI Grocery");
+        try {
+            PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+            set.add(OrientationRequested.PORTRAIT);
+            table.print(JTable.PrintMode.FIT_WIDTH, header, footer, true, set, true);
+            JOptionPane.showMessageDialog(null, "Print successfully");
+        } catch (HeadlessException | PrinterException e1) {
+        }
     }//GEN-LAST:event_btnExportActionPerformed
 
     private void txtFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFindActionPerformed
         // TODO add your handling code here:
-        searchTimer = new Timer(100, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String name = txtFind.getText();
-				try {
-					categoryController.searchCategories(name);
-				} catch (ClassNotFoundException | IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		searchTimer.setRepeats(false);
+        searchTimer = new Timer(100, (ActionEvent e) -> {
+            String name1 = txtFind.getText();
+            try {
+                categoryController.searchCategories(name1);
+            }catch (ClassNotFoundException | IOException e1) {
+            }
+        });
+        searchTimer.setRepeats(false);
         txtFind.getDocument().addDocumentListener(new DocumentListener() {
 
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				restartTimer();
-			}
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                restartTimer();
+            }
 
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				restartTimer();
-			}
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                restartTimer();
+            }
 
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				restartTimer();
-			}
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                restartTimer();
+            }
 
-			private void restartTimer() {
-				if (searchTimer.isRunning()) {
-					searchTimer.restart();
-				} else {
-					searchTimer.start();
-				}
-			}
-		});
+            private void restartTimer() {
+                if (searchTimer.isRunning()) {
+                    searchTimer.restart();
+                } else {
+                    searchTimer.start();
+                }
+            }
+        });
     }//GEN-LAST:event_txtFindActionPerformed
 
     private void sortComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortComboBoxActionPerformed

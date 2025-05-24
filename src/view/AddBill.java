@@ -1,4 +1,3 @@
-
 package view;
 
 import controller.BillController;
@@ -20,7 +19,7 @@ import util.FormUtils;
  *
  * @author hieuk
  */
-public class AddBill extends javax.swing.JFrame implements ProductSelection{
+public class AddBill extends javax.swing.JFrame implements ProductSelection {
 
     /**
      * Creates new form AddBill
@@ -30,20 +29,23 @@ public class AddBill extends javax.swing.JFrame implements ProductSelection{
     private ProductController productController;
     private BillController billController;
     private User user;
+
     public AddBill(BillController billController, User user) {
         initComponents();
+        setResizable(false);
+        setLocationRelativeTo(null);
         this.billController = billController;
         this.user = user;
         productDAO = new ProductDAO();
-	productController = new ProductController(productDAO, null);
+        productController = new ProductController(productDAO, null);
     }
-    
+
     @Override
-	public void onProductSelected(Product selectedProduct, int quantity) {
-		DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
-		dtm.addRow(new Object[] { selectedProduct.getId(), selectedProduct.getName(), selectedProduct.getPrice(),
-				String.valueOf(quantity) });
-	}
+    public void onProductSelected(Product selectedProduct, int quantity) {
+        DefaultTableModel dtm = (DefaultTableModel) this.table.getModel();
+        dtm.addRow(new Object[]{selectedProduct.getId(), selectedProduct.getName(), selectedProduct.getPrice(),
+            String.valueOf(quantity)});
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -162,53 +164,54 @@ public class AddBill extends javax.swing.JFrame implements ProductSelection{
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
-    				if (!FormUtils.validateForm(getContentPane())) {
-					JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+        if (!FormUtils.validateForm(getContentPane())) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-				String id;
-				while (true) {
-					id = BillIdGenerator.generateBillId();
-					try {
-						if (billController.getBillById(id) == null)
-							break;
-					} catch (ClassNotFoundException | IOException e1) {
-					}
-				}
+        String id;
+        while (true) {
+            id = BillIdGenerator.generateBillId();
+            try {
+                if (billController.getBillById(id) == null) {
+                    break;
+                }
+            } catch (ClassNotFoundException | IOException e1) {
+            }
+        }
 
-				String name = txtName.getText();
-				int adminId = user.getId();
-				Date date = new Date();
+        String name = txtName.getText();
+        int adminId = user.getId();
+        Date date = new Date();
 
-				HashMap<Product, Integer> products = new HashMap<>();
-				DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-				int rowCount = dtm.getRowCount();
-				for (int i = 0; i < rowCount; i++) {
-					int productId = Integer.parseInt(dtm.getValueAt(i, 0).toString());
-					try {
-						Product product = productController.getProductById(productId);
-						int buyQuantity = Integer.parseInt(String.valueOf(dtm.getValueAt(i, 3)));
-						products.put(product, buyQuantity);
-						product.setQuantity(product.getQuantity() - buyQuantity);
-						productController.updateProduct(product);
-					} catch (ClassNotFoundException | IOException e1) {
-					}
-				}
+        HashMap<Product, Integer> products = new HashMap<>();
+        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+        int rowCount = dtm.getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            int productId = Integer.parseInt(dtm.getValueAt(i, 0).toString());
+            try {
+                Product product = productController.getProductById(productId);
+                int buyQuantity = Integer.parseInt(String.valueOf(dtm.getValueAt(i, 3)));
+                products.put(product, buyQuantity);
+                product.setQuantity(product.getQuantity() - buyQuantity);
+                productController.updateProduct(product);
+            } catch (ClassNotFoundException | IOException e1) {
+            }
+        }
 
-				try {
-					if (billController.addBill(new Bill(id, name, adminId, date, products))) {
-						JOptionPane.showMessageDialog(this, "Tạo hóa đơn thành công");
-						dispose();
-						new Home(user).setVisible(true);
-					} else {
-						JOptionPane.showMessageDialog(this, "Tạo hóa đơn thất bại", "Error",
-								JOptionPane.ERROR_MESSAGE);
-					}
+        try {
+            if (billController.addBill(new Bill(id, name, adminId, date, products))) {
+                JOptionPane.showMessageDialog(this, "Tạo hóa đơn thành công");
+                dispose();
+                new Home(user).setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Tạo hóa đơn thất bại", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
 
-				} catch (ClassNotFoundException | IOException e1) {
-				}						   
+        } catch (ClassNotFoundException | IOException e1) {
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

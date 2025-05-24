@@ -24,37 +24,42 @@ public class BillDetail extends javax.swing.JFrame {
     /**
      * Creates new form BillDetail
      */
+    private static final long serialVersionUID = 1L;
     private UserDAO userDAO;
     private UserController userController;
     private Bill bill;
     private User user;
     HashMap<Product, Integer> products;
+
     public BillDetail(Bill bill) {
         initComponents();
+        setResizable(false);
+        setLocationRelativeTo(null);
+        this.bill = bill;
         userDAO = new UserDAO();
-	userController = new UserController(userDAO);
+        userController = new UserController(userDAO);
         products = bill.getProducts();
         updateInfo();
     }
-    
-    private void updateInfo()
-    {
+
+    private void updateInfo() {
         try {
             labelId.setText(bill.getId());
             labelName.setText(bill.getName());
             user = userController.getUserById(bill.getAdminId());
             lableAdmin.setText(user.getUsername());
             labelDate.setText(bill.getDate());
-            
+
             DefaultTableModel dtm = (DefaultTableModel) table.getModel();
             for (Product product : products.keySet()) {
-                dtm.addRow(new Object[] { product.getId(), product.getName(), String.valueOf(product.getPrice()),
-                    products.get(product) });
+                dtm.addRow(new Object[]{product.getId(), product.getName(), String.valueOf(product.getPrice()),
+                    products.get(product)});
             }
         } catch (ClassNotFoundException | IOException ex) {
             Logger.getLogger(BillDetail.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -101,10 +106,7 @@ public class BillDetail extends javax.swing.JFrame {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "ID", "Tên sản phẩm", "Đơn giá", "Số lượng mua"

@@ -35,9 +35,11 @@
             <file>file:/C:/Users/hieuk/Desktop/Java/HaUI_GroceryManagement/src/util/BillIdGenerator.java</file>
             <file>file:/C:/Users/hieuk/Desktop/Java/HaUI_GroceryManagement/src/dao/BillDAO.java</file>
             <file>file:/C:/Users/hieuk/Desktop/Java/HaUI_GroceryManagement/src/dao/DAO.java</file>
-            <file>file:/C:/Users/hieuk/Desktop/Java/HaUI_GroceryManagement/src/util/ButtonHover.java</file>
             <file>file:/C:/Users/hieuk/Desktop/Java/HaUI_GroceryManagement/src/view/BillDetail.java</file>
             <file>file:/C:/Users/hieuk/Desktop/Java/HaUI_GroceryManagement/src/model/Bill.java</file>
+            <file>file:/C:/Users/hieuk/Desktop/Java/HaUI_GroceryManagement/src/db/bills.bin</file>
+            <file>file:/C:/Users/hieuk/Desktop/Java/HaUI_GroceryManagement/src/util/FileConnector.java</file>
+            <file>file:/C:/Users/hieuk/Desktop/Java/HaUI_GroceryManagement/src/util/PasswordGenerator.java</file>
         </group>
     </open-files>
 </project-private>

@@ -7,79 +7,80 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class Bill implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private String id;
-	private String name;
-	private int adminId;
-	private Date date;
-	private HashMap<Product, Integer> products;
-	private double total;
 
-	public Bill() {
-	}
+    private static final long serialVersionUID = 1L;
+    private String id;
+    private String name;
+    private int adminId;
+    private Date date;
+    private HashMap<Product, Integer> products;
+    private double total;
 
-	public Bill(String id, String name, int adminId, Date date, HashMap<Product, Integer> products) {
-		this.id = id;
-		this.name = name;
-		this.adminId = adminId;
-		this.date = date;
-		this.products = products;
-		this.total = 0;
-		calcTotal();
-	}
+    public Bill() {
+    }
 
-	public String getId() {
-		return id;
-	}
+    public Bill(String id, String name, int adminId, Date date, HashMap<Product, Integer> products) {
+        this.id = id;
+        this.name = name;
+        this.adminId = adminId;
+        this.date = date;
+        this.products = products;
+        this.total = 0;
+        calcTotal();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public int getAdminId() {
-		return adminId;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getDate() {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
-		return sdf.format(date);
-	}
+    public int getAdminId() {
+        return adminId;
+    }
 
-	public HashMap<Product, Integer> getProducts() {
-		return products;
-	}
+    public String getDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
+        return sdf.format(date);
+    }
 
-	public double getTotal() {
-		return total;
-	}
+    public HashMap<Product, Integer> getProducts() {
+        return products;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public double getTotal() {
+        return total;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setAdminId(int adminId) {
-		this.adminId = adminId;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
+    }
 
-	public void setProducts(HashMap<Product, Integer> products) {
-		this.products = products;
-	}
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-	public void setTotal(double total) {
-		this.total = total;
-	}
+    public void setProducts(HashMap<Product, Integer> products) {
+        this.products = products;
+    }
 
-	public void calcTotal() {
-		for (Product product : products.keySet()) {
-			total += product.getPrice() * products.get(product);
-		}
-	}
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public void calcTotal() {
+        for (Product product : products.keySet()) {
+            total += product.getPrice() * products.get(product);
+        }
+    }
 }

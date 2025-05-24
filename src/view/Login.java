@@ -5,8 +5,6 @@
 package view;
 
 import dao.UserDAO;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import model.User;
 import util.FormUtils;
@@ -22,9 +20,10 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form LoginView
      */
-     private static final long serialVersionUID = 1L;
-     private UserDAO userDAO;
-     boolean isHide;
+    private static final long serialVersionUID = 1L;
+    private UserDAO userDAO;
+    boolean isHide;
+
     public Login() {
         initComponents();
         setResizable(false);
@@ -32,9 +31,9 @@ public class Login extends javax.swing.JFrame {
         userDAO = new UserDAO();
         isHide = true;
         txtPassword.setEchoChar('●');
-        
+
     }
-   
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -57,9 +56,11 @@ public class Login extends javax.swing.JFrame {
         txtPassword = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Đăng nhập tài khoản");
         setBackground(new java.awt.Color(255, 255, 255));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setFocusCycleRoot(false);
+        setIconImage(private static final long serialVersionUID = 1L;);
         setIconImages(null);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
@@ -186,30 +187,30 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_txtUsernameActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-         if (!FormUtils.validateForm(getContentPane())) {
-            JOptionPane.showMessageDialog(this, 
-                "Vui lòng nhập đầy đủ thông tin", 
-                "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if (!FormUtils.validateForm(getContentPane())) {
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng nhập đầy đủ thông tin",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         String username = txtUsername.getText();
         String password = txtPassword.getText();
-        
+
         try {
             User user = userDAO.get(u -> u.getUsername().equals(username));
             if (user == null || !user.getPassword().equals(HashPassword.hashPassword(password))) {
-                JOptionPane.showMessageDialog(this, 
-                    "Tên đăng nhập hoặc mật khẩu không chính xác.",
-                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                        "Tên đăng nhập hoặc mật khẩu không chính xác.",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
-              
+
             }
 
             if (!user.isVerify()) {
                 JOptionPane.showMessageDialog(this,
-                    "Tài khoản của bạn chưa được xác thực hoặc không có quyền truy cập.\nVui lòng liên hệ Admin.", 
-                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        "Tài khoản của bạn chưa được xác thực hoặc không có quyền truy cập.\nVui lòng liên hệ Admin.",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -218,16 +219,15 @@ public class Login extends javax.swing.JFrame {
             new Home(user).setVisible(true);
         } catch (ClassNotFoundException | IOException e) {
             JOptionPane.showMessageDialog(this,
-                "Lỗi hệ thống: " + e.getMessage(),
-                "Lỗi", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+                    "Lỗi hệ thống: " + e.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignupActionPerformed
         // TODO add your handling code here:
         dispose();
-        
+
         java.awt.EventQueue.invokeLater(() -> {
             new Signup().setVisible(true);
         });
@@ -241,13 +241,10 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        if(isHide)
-        {
-            txtPassword.setEchoChar((char)0);
+        if (isHide) {
+            txtPassword.setEchoChar((char) 0);
             jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/show-password-icon.png")));
-        }
-        else
-        {
+        } else {
             jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/hide-password-icon.png")));
             txtPassword.setEchoChar('●');
         }
@@ -283,10 +280,8 @@ public class Login extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Login().setVisible(true);
         });
     }
 
