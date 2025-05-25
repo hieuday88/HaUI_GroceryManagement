@@ -39,7 +39,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="txtFind" min="-2" pref="405" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="sortComboBox" min="-2" pref="137" max="-2" attributes="0"/>
+                      <Component id="findComboBox" min="-2" pref="137" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
@@ -51,23 +51,20 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="txtDetail" pref="79" max="32767" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="sortComboBox" max="32767" attributes="0"/>
-                          <Component id="txtFind" pref="35" max="32767" attributes="0"/>
+                          <Component id="findComboBox" max="32767" attributes="0"/>
+                          <Component id="txtFind" min="-2" pref="35" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                   </Group>
+                  <Component id="txtDetail" pref="82" max="32767" attributes="0"/>
               </Group>
+              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="546" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -165,7 +162,7 @@
         <Property name="text" type="java.lang.String" value="T&#xec;m ki&#x1ebf;m"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="sortComboBox">
+    <Component class="javax.swing.JComboBox" name="findComboBox">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="14" style="0"/>
@@ -178,7 +175,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sortComboBoxActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="findComboBoxActionPerformed"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>

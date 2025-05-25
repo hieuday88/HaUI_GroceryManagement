@@ -5,12 +5,18 @@
 package view;
 
 import controller.BillController;
+import controller.ProductController;
 import dao.BillDAO;
+import dao.ProductDAO;
 import java.awt.Toolkit;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import model.User;
 import javax.swing.JOptionPane;
@@ -32,18 +38,51 @@ public class Home extends javax.swing.JFrame {
      */
     private static final long serialVersionUID = 1L;
     private User user;
-    BillController billController;
-    BillDAO billDAO;
+    private BillController billController;
+    private BillDAO billDAO;
+    private ProductDAO productDAO;
+    private ProductController productController;
 
     public Home(User user) {
-        initComponents();
-        setIconImage(Toolkit.getDefaultToolkit().getImage(Home.class.getResource("/resources/logo.png")));
-        this.user = user;
-        setResizable(false);
-        setLocationRelativeTo(null);
-        billDAO = new BillDAO();
-        billController = new BillController(billDAO, null);
-        labelHello.setText("Xin chào, " + user.getUsername() + "!");
+        try {
+            initComponents();
+            setIconImage(Toolkit.getDefaultToolkit().getImage(Home.class.getResource("/resources/logo.png")));
+            this.user = user;
+            setResizable(false);
+            setLocationRelativeTo(null);
+            billDAO = new BillDAO();
+            billController = new BillController(billDAO, null);
+            productDAO = new ProductDAO();
+            productController = new ProductController(productDAO, null);
+            labelHello.setText("Xin chào, " + user.getUsername() + "!");
+            txtProducts.setText(String.valueOf(productController.getAllProducts().size()));
+            txtBills.setText(String.valueOf(billController.getAllBills().size()));
+            calculateRevenue();
+        } catch (ClassNotFoundException | IOException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void calculateRevenue() {
+        try {
+            double revenue = 0;
+            List<Bill> bills;
+            bills = billController.getAllBills();
+            LocalDate today = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM");
+            String todayMonth = today.format(formatter);
+            for (Bill bill : bills) {
+                String month = bill.getDate().substring(3, 5);
+                if (todayMonth.equals(month)) {
+                    revenue += bill.getTotal();
+                }
+            }
+            revenue /= 1000000;
+            String revenueStr = String.format("%.2f", revenue).concat("tr.đ");
+            txtRevenue.setText(revenueStr);
+        } catch (ClassNotFoundException | IOException e1) {
+            e1.printStackTrace();
+        }
     }
 
     /**
@@ -162,11 +201,11 @@ public class Home extends javax.swing.JFrame {
 
         txtProducts.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
         txtProducts.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        txtProducts.setText("75");
+        txtProducts.setText("0");
 
         txtBills.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
         txtBills.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        txtBills.setText("75");
+        txtBills.setText("0");
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -174,7 +213,7 @@ public class Home extends javax.swing.JFrame {
 
         txtRevenue.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
         txtRevenue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        txtRevenue.setText("1.91tr.đ");
+        txtRevenue.setText("0");
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

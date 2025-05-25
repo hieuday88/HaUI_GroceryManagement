@@ -208,42 +208,70 @@ public class ProductManagement extends javax.swing.JFrame {
     }
 
     public void checkBuy() {
-        if (isBuying) {
-            btnAdd.setVisible(false);
-            btnReplace.setVisible(false);
-            btnDel.setVisible(false);
-            btnExport.setVisible(false);
+    if (isBuying) {
+        btnAdd.setVisible(false);
+        btnReplace.setVisible(false);
+        btnDel.setVisible(false);
+        btnExport.setVisible(false);
 
-            table.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-                    if (e.getClickCount() == 2) {
-                        int selectedRow = table.getSelectedRow();
-                        if (selectedRow != -1) {
-                            int productId = Integer.parseInt((String) (dtm.getValueAt(selectedRow, 0)));
-                            int productQuantity = Integer.parseInt((String) (dtm.getValueAt(selectedRow, 4)));
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+                if (e.getClickCount() == 2) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        try {
+                            Object idValue = dtm.getValueAt(selectedRow, 0);
+                            if (idValue == null) {
+                                throw new NumberFormatException("Product ID is null");
+                            }
+                            int productId = Integer.parseInt(idValue.toString());
 
-                            int buyQuantity = Integer.parseInt(JOptionPane.showInputDialog("Nhập số lượng: "));
-                            if (buyQuantity > productQuantity) {
-                                JOptionPane.showMessageDialog(ProductManagement.this, "Không đủ số lượng", "Error",
-                                        JOptionPane.ERROR_MESSAGE);
+                            Object quantityValue = dtm.getValueAt(selectedRow, 4);
+                            if (quantityValue == null) {
+                                throw new NumberFormatException("Product quantity is null");
+                            }
+                            int productQuantity = Integer.parseInt(quantityValue.toString());
+
+                            String input = JOptionPane.showInputDialog("Nhập số lượng: ");
+                            if (input == null || input.trim().isEmpty()) {
+                                return;
+                            }
+                            int buyQuantity = Integer.parseInt(input);
+
+                            if (buyQuantity <= 0) {
+                                JOptionPane.showMessageDialog(ProductManagement.this, 
+                                    "Số lượng phải lớn hơn 0", "Error",
+                                    JOptionPane.ERROR_MESSAGE);
                                 return;
                             }
 
-                            Product selectedProduct;
-                            try {
-                                selectedProduct = productController.getProductById(productId);
-                                ps.onProductSelected(selectedProduct, buyQuantity);
-                                dispose();
-                            } catch (ClassNotFoundException | IOException e1) {
+                            if (buyQuantity > productQuantity) {
+                                JOptionPane.showMessageDialog(ProductManagement.this, 
+                                    "Không đủ số lượng", "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                                return;
                             }
+
+                            Product selectedProduct = productController.getProductById(productId);
+                            ps.onProductSelected(selectedProduct, buyQuantity);
+                            dispose();
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(ProductManagement.this,
+                                "Dữ liệu không hợp lệ: " + ex.getMessage(),
+                                "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        } catch (ClassNotFoundException | IOException ex) {
+                            JOptionPane.showMessageDialog(ProductManagement.this,
+                                "Lỗi khi truy xuất sản phẩm: " + ex.getMessage(),
+                                "Lỗi", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
-            });
-        }
+            }
+        });
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
